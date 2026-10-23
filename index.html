@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>여름농장 🌱</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neodgm/neodgm-webfont@1.601/neodgm/style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
@@ -12,7 +13,7 @@ body{margin:0;background:#dce9c8;color:#35533b;font-family:monospace;padding:18p
 main{max-width:850px;margin:auto}
 .panel{background:#fffbea;border:4px solid #789b65;box-shadow:5px 5px 0 #789b65;padding:20px;margin:14px 0}
 h1,h2{text-align:center}
-h1{font-size:clamp(25px,5vw,38px)}
+h1{font-family:'NeoDunggeunmo',monospace;font-size:clamp(25px,5vw,38px)}
 .grass{text-align:center;font-size:30px}
 button,input,textarea{font:inherit;padding:10px;border:2px solid #92ad7b;border-radius:5px}
 button{background:#789b65;color:white;cursor:pointer}
@@ -24,7 +25,7 @@ textarea{min-height:85px}
 .nav{display:flex;justify-content:space-between;align-items:center;gap:10px}
 #calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
 .dayname{text-align:center;font-weight:bold;padding:8px 0}
-.cell{min-height:83px;background:#f4f1d9;border:2px solid #d1dcb6;padding:5px;overflow-wrap:anywhere;cursor:pointer;color:#35533b}
+.cell{min-height:83px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;text-align:left;background:#f4f1d9;border:2px solid #d1dcb6;padding:5px;overflow-wrap:anywhere;cursor:pointer;color:#35533b}
 .cell.selected{border:3px solid #d18b65;background:#fff4dc}
 .cell.today{background:#e4f0cf}
 .cell .num{font-weight:bold}
@@ -39,11 +40,11 @@ textarea{min-height:85px}
 <main>
   <div class="grass">☀️ 🌳 🏡 🌳 ☀️</div>
   <h1>🌱 여름농장 🌱</h1>
-  <p style="text-align:center">우리 둘만의 작은 픽셀 정원</p>
+  <p style="text-align:center">우리 둘만의 작은 농장</p>
 
   <section id="login" class="panel">
     <h2>🏡 농장 입장하기</h2>
-    <p class="small">치아키와 미도리의 계정으로 로그인해 줘!</p>
+    <p class="small">가입한 이메일과 비밀번호로 로그인해 주세요.</p>
     <label>이메일</label>
     <input id="email" type="email" placeholder="가입한 이메일 주소">
     <label>비밀번호</label>
@@ -90,7 +91,7 @@ textarea{min-height:85px}
       <p id="status" class="small"></p>
     </div>
   </section>
-  <footer class="small" style="text-align:center;padding:20px">Made with ♡ by Chiaki &amp; Midori</footer>
+  <footer class="small" style="text-align:center;padding:20px">Made with ♡ by Midori &amp; Chiaki</footer>
 </main>
 
 <script>
