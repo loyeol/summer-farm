@@ -35,6 +35,8 @@ textarea{min-height:85px}
 .hidden{display:none!important}
 #status{white-space:pre-wrap;line-height:1.5}
 @media(max-width:500px){body{padding:7px}.panel{padding:10px}.cell{min-height:66px;padding:3px;font-size:12px}.event-dot{font-size:10px}.dayname{font-size:11px}}
+
+.diary-list-head,.diary-list-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(90px,auto);gap:12px;align-items:center}.diary-list-head{font-size:12px;color:#66745b;padding:6px 12px}.diary-list-row{width:100%;text-align:left;background:transparent;color:inherit;border:0;padding:4px 0;box-shadow:none}.diary-list-row span{text-align:right;font-size:13px}.diary-detail{border-top:1px dashed #d1dcb6;margin-top:10px;padding-top:10px}.checklist-table td .row{gap:4px;flex-wrap:nowrap}.checklist-table td button{padding:6px 8px;font-size:12px}
 </style>
 </head>
 <body>
@@ -47,7 +49,7 @@ textarea{min-height:85px}
     <h2>🏡 농장 입장하기</h2>
     <p class="small">어서 와라, 오늘은 어떤 일이 있었어?</p>
     <label>이메일</label>
-    <input id="email" type="email" placeholder="이메일 입력">
+    <input id="email" type="email" placeholder="이메일 주소 입력">
     <label>비밀번호</label>
     <input id="password" type="password" placeholder="비밀번호 입력">
     <button id="loginBtn" style="width:100%">🌷 로그인</button>
@@ -154,6 +156,7 @@ const $ = id => document.getElementById(id);
 let events = [];
 let diaryEntries = [];
 let diaryEditingId = null;
+let expandedDiaryId = null;
 let checklistEntries = [];
 let selectedDate = localDate(new Date());
 let viewYear = new Date().getFullYear();
@@ -292,14 +295,28 @@ function renderDiaries(focusId=null) {
   if(!$("diaryList")) return;
   $("diaryDateTitle").textContent=`📔 ${selectedDate} 일기장`;
   const list=diaryEntries.filter(d=>d.diary_date===selectedDate);
-  $("diaryList").innerHTML=list.length?list.map(d=>`
-    <article class="diary-card" id="diary-${escapeHTML(d.id)}">
-      <div class="small">${diaryAuthorLabel(d)} · ${escapeHTML(d.diary_date)}</div>
-      <h3>${escapeHTML(d.title)}</h3>
-      <div class="diary-content">${escapeHTML(d.content||"")}</div>
-      ${d.youtube_url?`<p><a class="youtube-link" href="${escapeHTML(d.youtube_url)}" target="_blank" rel="noopener noreferrer">▶️ 일기에 첨부한 유튜브 영상 보기</a></p>`:""}
-      ${d.author_id===currentUser?.id?`<div class="row"><button data-diary-edit="${escapeHTML(d.id)}">수정</button><button data-diary-delete="${escapeHTML(d.id)}" style="background:#bb8068">삭제</button></div>`:""}
-    </article>`).join(""):'<p class="small">이 날짜에는 아직 일기가 없어. 첫 번째 일기를 남겨 볼까? 🌱</p>';
+  if(focusId) expandedDiaryId=String(focusId);
+  const sorted=[...list].sort((a,b)=>(a.created_at||"").localeCompare(b.created_at||""));
+  $("diaryList").innerHTML=sorted.length?`
+    <div class="diary-list-head"><span>제목</span><span>작성자</span></div>
+    ${sorted.map(d=>{
+      const open=String(d.id)===String(expandedDiaryId);
+      return `<article class="diary-card" id="diary-${escapeHTML(d.id)}">
+        <button type="button" class="diary-list-row" data-diary-toggle="${escapeHTML(d.id)}" aria-expanded="${open}">
+          <strong>${escapeHTML(d.title)}</strong><span>${diaryAuthorLabel(d)} ${open?"▴":"▾"}</span>
+        </button>
+        ${open?`<div class="diary-detail"><div class="small">${escapeHTML(d.diary_date)}</div>
+          <div class="diary-content">${escapeHTML(d.content||"")}</div>
+          ${d.youtube_url?`<p><a class="youtube-link" href="${escapeHTML(d.youtube_url)}" target="_blank" rel="noopener noreferrer">▶️ 일기에 첨부한 유튜브 영상 보기</a></p>`:""}
+          ${d.author_id===currentUser?.id?`<div class="row"><button data-diary-edit="${escapeHTML(d.id)}">수정</button><button data-diary-delete="${escapeHTML(d.id)}" style="background:#bb8068">삭제</button></div>`:""}
+        </div>`:""}
+      </article>`;
+    }).join("")}`:'<p class="small">이 날짜에는 아직 일기가 없어. 첫 번째 일기를 남겨 볼까? 🌱</p>';
+  $("diaryList").querySelectorAll("[data-diary-toggle]").forEach(btn=>btn.onclick=()=>{
+    const id=String(btn.dataset.diaryToggle);
+    expandedDiaryId=String(expandedDiaryId)===id?null:id;
+    renderDiaries();
+  });
   list.forEach(d=>{
     const edit=document.querySelector(`[data-diary-edit="${d.id}"]`);
     const del=document.querySelector(`[data-diary-delete="${d.id}"]`);
@@ -341,7 +358,7 @@ function renderChecklists(){
   const container=$("checklistList");
   if(!container)return;
   if(!checklistEntries.length){container.innerHTML='<p class="small">아직 체크리스트가 없어. 첫 번째 시트를 추가해 보자! 🌱</p>';return;}
-  container.innerHTML=`<div style="overflow-x:auto"><table class="checklist-table"><thead><tr><th class="checklist-number">번호</th><th>시트 이름</th><th class="checklist-check">미도리 💚</th><th class="checklist-check">치아키 ❤️‍🔥</th></tr></thead><tbody>${checklistEntries.map((item,i)=>`<tr><td>${i+1}</td><td><a href="${escapeHTML(item.sheet_url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.sheet_name)} (구글 시트 열기 ↗)</a></td><td><input type="checkbox" aria-label="미도리 체크" data-check-id="${escapeHTML(item.id)}" data-person="midori" ${item.midori_done?"checked":""}></td><td><input type="checkbox" aria-label="치아키 체크" data-check-id="${escapeHTML(item.id)}" data-person="chiaki" ${item.chiaki_done?"checked":""}></td></tr>`).join("")}</tbody></table></div>`;
+  container.innerHTML=`<div style="overflow-x:auto"><table class="checklist-table"><thead><tr><th class="checklist-number">번호</th><th>시트 이름</th><th class="checklist-check">미도리 💚</th><th class="checklist-check">치아키 ❤️‍🔥</th><th>관리</th></tr></thead><tbody>${checklistEntries.map((item,i)=>`<tr><td>${i+1}</td><td><a href="${escapeHTML(item.sheet_url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.sheet_name)}</a></td><td><input type="checkbox" aria-label="미도리 체크" data-check-id="${escapeHTML(item.id)}" data-person="midori" ${item.midori_done?"checked":""}></td><td><input type="checkbox" aria-label="치아키 체크" data-check-id="${escapeHTML(item.id)}" data-person="chiaki" ${item.chiaki_done?"checked":""}></td><td><div class="row"><button data-check-edit="${escapeHTML(item.id)}">수정</button><button data-check-delete="${escapeHTML(item.id)}" style="background:#bb8068">삭제</button></div></td></tr>`).join("")}</tbody></table></div>`;
   container.querySelectorAll("input[data-check-id]").forEach(box=>box.addEventListener("change",async()=>{
     const field=box.dataset.person==="midori"?"midori_done":"chiaki_done",oldValue=!box.checked;
     box.disabled=true;
@@ -351,6 +368,24 @@ function renderChecklists(){
     const entry=checklistEntries.find(x=>String(x.id)===box.dataset.checkId);if(entry)entry[field]=box.checked;
     $("checklistStatus").textContent="저장했어! 🌱";
   }));
+  container.querySelectorAll("[data-check-edit]").forEach(btn=>btn.onclick=async()=>{
+    const item=checklistEntries.find(x=>String(x.id)===btn.dataset.checkEdit);if(!item)return;
+    const name=prompt("체크리스트 이름을 수정해 줘:",item.sheet_name);if(name===null)return;
+    const url=prompt("구글 시트 링크를 수정해 줘:",item.sheet_url);if(url===null)return;
+    const cleanName=name.trim(),cleanUrl=url.trim();
+    if(!cleanName||!cleanUrl){$("checklistStatus").textContent="이름과 링크를 모두 입력해 줘.";return;}
+    try{const parsed=new URL(cleanUrl);if(parsed.protocol!=="https:"||parsed.hostname!=="docs.google.com")throw new Error();}catch(e){$("checklistStatus").textContent="유효한 구글 시트 링크(https://docs.google.com/...)를 입력해 줘.";return;}
+    const {error}=await db.from("farm_checklists").update({sheet_name:cleanName,sheet_url:cleanUrl,updated_at:new Date().toISOString()}).eq("id",item.id);
+    if(error){$("checklistStatus").textContent="수정 실패: "+error.message;return;}
+    item.sheet_name=cleanName;item.sheet_url=cleanUrl;renderChecklists();$("checklistStatus").textContent="수정했어! 🌱";
+  });
+  container.querySelectorAll("[data-check-delete]").forEach(btn=>btn.onclick=async()=>{
+    const item=checklistEntries.find(x=>String(x.id)===btn.dataset.checkDelete);if(!item)return;
+    if(!confirm(`“${item.sheet_name}” 체크리스트를 삭제할까?`))return;
+    const {error}=await db.from("farm_checklists").delete().eq("id",item.id);
+    if(error){$("checklistStatus").textContent="삭제 실패: "+error.message;return;}
+    checklistEntries=checklistEntries.filter(x=>String(x.id)!==String(item.id));renderChecklists();$("checklistStatus").textContent="삭제했어.";
+  });
 }
 function startEdit(e) {
   editingId=e.id;
@@ -405,7 +440,7 @@ $("saveChecklist").onclick=async()=>{
   const name=$("checklistName").value.trim(),url=$("checklistUrl").value.trim();
   if(!name||!url){$("checklistStatus").textContent="시트 이름과 링크를 입력해 줘!";return;}
   try{const parsed=new URL(url);if(parsed.protocol!=="https:"||parsed.hostname!=="docs.google.com")throw new Error();}
-  catch(e){$("checklistStatus").textContent="구글 시트 링크를 입력해 줘.";return;}
+  catch(e){$("checklistStatus").textContent="유효한 구글 시트 링크(https://docs.google.com/...)를 입력해 줘.";return;}
   $("checklistStatus").textContent="추가 중...";
   const {error}=await db.from("farm_checklists").insert({sheet_name:name,sheet_url:url,midori_done:false,chiaki_done:false,created_by:currentUser.id});
   if(error){$("checklistStatus").textContent="추가 실패: "+error.message;return;}
