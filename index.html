@@ -253,7 +253,12 @@ async function showSession() {
   $("login").classList.toggle("hidden",!!currentUser);
   $("farm").classList.toggle("hidden",!currentUser);
   if(currentUser){
-    $("who").textContent=currentUser.email||"농장 친구";
+    const email=(currentUser.email||"").toLowerCase();
+  const displayNames={
+    "midori@ryuseitai.es":"타카미네 미도리",
+    "chiaki@ryuseitai.es":"모리사와 치아키"
+  };
+  $("who").textContent=displayNames[email]||currentUser.email||"농장 친구";
     $("eventDate").value=selectedDate;
     await loadEvents();
   }
