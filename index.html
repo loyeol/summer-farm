@@ -1,77 +1,323 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>여름농장</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Noto Sans KR", sans-serif;
-      background: #f7f6e9;
-      color: #435b43;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 24px;
-    }
-    .farm {
-      width: 100%;
-      max-width: 560px;
-      background: #fffdf5;
-      border: 2px solid #dce5cb;
-      border-radius: 28px;
-      padding: 42px 24px;
-      text-align: center;
-      box-shadow: 0 10px 30px #647b4412;
-    }
-    .sun { font-size: 42px; }
-    h1 { font-size: 36px; margin: 14px 0 8px; }
-    .subtitle { color: #829078; font-size: 14px; }
-    .message {
-      margin: 28px 0;
-      padding: 20px;
-      background: #f0f4e6;
-      border-radius: 18px;
-      line-height: 1.8;
-      font-size: 15px;
-    }
-    .buttons {
-      display: grid;
-      gap: 12px;
-      margin-top: 24px;
-    }
-    .farm-button {
-      display: block;
-      padding: 15px;
-      border-radius: 14px;
-      background: #7d9b70;
-      color: white;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    .farm-button.secondary {
-      background: #e8eddd;
-      color: #52694a;
-    }
-    footer { margin-top: 28px; font-size: 12px; color: #9ba58e; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>여름농장 🌱</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#dce9c8;color:#35533b;font-family:monospace;padding:18px}
+main{max-width:850px;margin:auto}
+.panel{background:#fffbea;border:4px solid #789b65;box-shadow:5px 5px 0 #789b65;padding:20px;margin:14px 0}
+h1,h2{text-align:center}
+h1{font-size:clamp(25px,5vw,38px)}
+.grass{text-align:center;font-size:30px}
+button,input,textarea{font:inherit;padding:10px;border:2px solid #92ad7b;border-radius:5px}
+button{background:#789b65;color:white;cursor:pointer}
+button:hover{filter:brightness(.94)}
+input,textarea{width:100%;background:white;color:#304b35;margin:5px 0 10px}
+textarea{min-height:85px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row>*{flex:1}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:10px}
+#calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.dayname{text-align:center;font-weight:bold;padding:8px 0}
+.cell{min-height:83px;background:#f4f1d9;border:2px solid #d1dcb6;padding:5px;overflow-wrap:anywhere;cursor:pointer;color:#35533b}
+.cell.selected{border:3px solid #d18b65;background:#fff4dc}
+.cell.today{background:#e4f0cf}
+.cell .num{font-weight:bold}
+.event-dot{font-size:11px;display:block;margin-top:5px}
+.small{font-size:12px;color:#687e61}
+.hidden{display:none!important}
+#status{white-space:pre-wrap;line-height:1.5}
+@media(max-width:500px){body{padding:7px}.panel{padding:10px}.cell{min-height:66px;padding:3px;font-size:12px}.event-dot{font-size:10px}.dayname{font-size:11px}}
+</style>
 </head>
 <body>
-  <main class="farm">
-    <div class="sun">🌱 ☀️ </div>
-    <h1>여름농장</h1>
-    <p class="subtitle">우리 둘만의 작은 농장</p>
-    <div class="message">
-      오늘 하루는 어땠어?
+<main>
+  <div class="grass">☀️ 🌳 🏡 🌳 ☀️</div>
+  <h1>🌱 여름농장 🌱</h1>
+  <p style="text-align:center">우리 둘만의 작은 픽셀 정원</p>
+
+  <section id="login" class="panel">
+    <h2>🏡 농장 입장하기</h2>
+    <p class="small">치아키와 미도리의 계정으로 로그인해 줘!</p>
+    <label>이메일</label>
+    <input id="email" type="email" placeholder="가입한 이메일 주소">
+    <label>비밀번호</label>
+    <input id="password" type="password" placeholder="가입할 때 설정한 비밀번호">
+    <button id="loginBtn" style="width:100%">🌷 로그인</button>
+    <p id="loginStatus" class="small"></p>
+  </section>
+
+  <section id="farm" class="hidden">
+    <div class="panel row">
+      <div>🌾 로그인: <strong id="who"></strong></div>
+      <button id="logoutBtn">로그아웃</button>
     </div>
-    <div class="buttons">
-      <a class="farm-button" href="#" onclick="alert('일기 기능은 다음 단계에서 만들 거야!'); return false;">📖 우리들의 일기</a>
-      <a class="farm-button secondary" href="#" onclick="alert('영상 공유 기능은 다음 단계에서 만들 거야!'); return false;">🎬 함께 보는 영상</a>
+
+    <div class="panel">
+      <div class="nav">
+        <button id="prev">◀</button>
+        <h2 id="monthTitle"></h2>
+        <button id="next">▶</button>
+      </div>
+      <div id="calendar"></div>
+      <p class="small">🌼 일정이 있는 날에는 날짜 아래에 표시돼. 날짜를 눌러 일정을 확인해 줘.</p>
     </div>
-    <footer>Made with ♡ by Midori &amp; Chiaki </footer>
-  </main>
+
+    <div class="panel">
+      <h2>💌 다가오는 기념일</h2>
+      <div id="countdowns">일정을 불러오는 중...</div>
+    </div>
+
+    <div class="panel">
+      <h2 id="selectedTitle">📮 날짜별 일정</h2>
+      <div id="eventList"></div>
+      <hr>
+      <h2>🌱 새 일정 심기</h2>
+      <label>일정 이름</label>
+      <input id="eventName" maxlength="100" placeholder="예: 우리 처음 만난 날">
+      <label>날짜</label>
+      <input id="eventDate" type="date">
+      <label>날짜별 메모</label>
+      <textarea id="eventMemo" maxlength="3000" placeholder="이날의 추억이나 약속을 적어 줘"></textarea>
+      <label><input id="yearly" type="checkbox" style="width:auto"> 매년 반복되는 기념일</label>
+      <button id="saveEvent" style="width:100%">🌷 일정 저장하기</button>
+      <button id="cancelEdit" class="hidden" style="width:100%;margin-top:8px;background:#8c9382">수정 취소</button>
+      <p id="status" class="small"></p>
+    </div>
+  </section>
+  <footer class="small" style="text-align:center;padding:20px">Made with ♡ by Chiaki &amp; Midori</footer>
+</main>
+
+<script>
+const SUPABASE_URL = "https://flcdxzmumuafiuymfwhi.supabase.co";
+const SUPABASE_KEY = "sb_publishable_joLERI2RsJv6xndBRMD4eg_p7G0dN9k";
+
+const configured =
+  SUPABASE_URL.startsWith("https://") &&
+  !SUPABASE_URL.includes("YOUR_SUPABASE") &&
+  !SUPABASE_KEY.includes("YOUR_SUPABASE");
+
+const db = configured
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+  : null;
+
+const $ = id => document.getElementById(id);
+let events = [];
+let selectedDate = localDate(new Date());
+let viewYear = new Date().getFullYear();
+let viewMonth = new Date().getMonth();
+let editingId = null;
+
+function localDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+function recurringOn(e, date) {
+  return e.is_yearly && e.event_date.slice(5) === date.slice(5);
+}
+function occursOn(e, date) {
+  return e.event_date === date || recurringOn(e,date);
+}
+function nextOccurrence(e) {
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  let y = now.getFullYear();
+  const [m,d] = e.event_date.slice(5).split("-").map(Number);
+  let target = new Date(y,m-1,d);
+  if (target < now) target = new Date(++y,m-1,d);
+  return target;
+}
+function dayDiff(target) {
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  return Math.round((target-now)/86400000);
+}
+function setStatus(msg) { $("status").textContent = msg; }
+
+async function loadEvents() {
+  const {data,error} = await db.from("farm_events")
+    .select("*").order("event_date",{ascending:true});
+  if(error) throw error;
+  events = data || [];
+  renderCalendar();
+  renderDay();
+  renderCountdowns();
+}
+function renderCalendar() {
+  $("monthTitle").textContent =
+    `${viewYear}년 ${viewMonth+1}월`;
+  const cal = $("calendar");
+  cal.innerHTML = "";
+  ["일","월","화","수","목","금","토"].forEach(d=>{
+    const el = document.createElement("div");
+    el.className="dayname"; el.textContent=d; cal.appendChild(el);
+  });
+  const first = new Date(viewYear,viewMonth,1).getDay();
+  const last = new Date(viewYear,viewMonth+1,0).getDate();
+  for(let i=0;i<first;i++){
+    cal.appendChild(document.createElement("div"));
+  }
+  for(let day=1;day<=last;day++){
+    const date = `${viewYear}-${String(viewMonth+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+    const cell = document.createElement("button");
+    cell.className = "cell";
+    if(date===localDate(new Date())) cell.classList.add("today");
+    if(date===selectedDate) cell.classList.add("selected");
+    const matches=events.filter(e=>occursOn(e,date));
+    cell.innerHTML=`<span class="num">${day}</span>`+
+      matches.slice(0,2).map(e=>`<span class="event-dot">🌼 ${escapeHTML(e.title)}</span>`).join("")+
+      (matches.length>2?`<span class="event-dot">+${matches.length-2}</span>`:"");
+    cell.addEventListener("click",()=>{
+      selectedDate=date;
+      $("eventDate").value=date;
+      renderCalendar();renderDay();
+    });
+    cal.appendChild(cell);
+  }
+}
+function renderDay() {
+  $("selectedTitle").textContent=`📮 ${selectedDate} 일정`;
+  const list=events.filter(e=>occursOn(e,selectedDate));
+  $("eventList").innerHTML=list.length?list.map(e=>`
+    <div class="panel">
+      <strong>🌷 ${escapeHTML(e.title)}</strong>
+      ${e.is_yearly?'<span class="small"> · 매년 반복</span>':""}
+      <p>${escapeHTML(e.memo||"메모 없음").replace(/\n/g,"<br>")}</p>
+      <p class="small">등록자: ${e.created_by===currentUser?.id?"나":"친구 또는 나"}</p>
+      <div class="row">
+        <button data-edit="${e.id}">수정</button>
+        <button data-delete="${e.id}" style="background:#bb8068">삭제</button>
+      </div>
+    </div>`).join(""):'<p class="small">아직 일정이 없어. 새로운 추억을 심어 볼까?</p>';
+  list.forEach(e=>{
+    listButton(e);
+  });
+}
+function listButton(e) {
+  const edit=document.querySelector(`[data-edit="${e.id}"]`);
+  const del=document.querySelector(`[data-delete="${e.id}"]`);
+  if(edit) edit.onclick=()=>startEdit(e);
+  if(del) del.onclick=()=>deleteEvent(e);
+}
+function renderCountdowns() {
+  const upcoming=events.map(e=>({e,date:nextOccurrence(e)}))
+    .sort((a,b)=>a.date-b.date).slice(0,8);
+  $("countdowns").innerHTML=upcoming.length?upcoming.map(({e,date})=>{
+    const n=dayDiff(date);
+    return `<div class="panel">
+      💚 <strong>${escapeHTML(e.title)}</strong>
+      <div class="small">${localDate(date)} · ${n===0?"오늘!":`D-${n}`}</div>
+    </div>`;
+  }).join(""):'<p class="small">기념일을 등록하면 D-day가 여기에 표시돼!</p>';
+}
+function startEdit(e) {
+  editingId=e.id;
+  $("eventName").value=e.title;
+  $("eventDate").value=e.event_date;
+  $("eventMemo").value=e.memo||"";
+  $("yearly").checked=e.is_yearly;
+  $("saveEvent").textContent="💾 수정 저장하기";
+  $("cancelEdit").classList.remove("hidden");
+  $("selectedTitle").scrollIntoView({behavior:"smooth"});
+}
+function resetForm() {
+  editingId=null;
+  $("eventName").value="";
+  $("eventMemo").value="";
+  $("yearly").checked=false;
+  $("eventDate").value=selectedDate;
+  $("saveEvent").textContent="🌷 일정 저장하기";
+  $("cancelEdit").classList.add("hidden");
+}
+async function deleteEvent(e) {
+  if(!confirm(`"${e.title}" 일정을 삭제할까?`)) return;
+  const {error}=await db.from("farm_events").delete().eq("id",e.id);
+  if(error){setStatus("삭제 실패: "+error.message);return;}
+  setStatus("일정을 삭제했어 🌱");
+  await loadEvents();
+}
+let currentUser=null;
+async function showSession() {
+  const {data:{session}}=await db.auth.getSession();
+  currentUser=session?.user||null;
+  $("login").classList.toggle("hidden",!!currentUser);
+  $("farm").classList.toggle("hidden",!currentUser);
+  if(currentUser){
+    $("who").textContent=currentUser.email||"농장 친구";
+    $("eventDate").value=selectedDate;
+    await loadEvents();
+  }
+}
+$("loginBtn").onclick=async()=>{
+  if(!db){$("loginStatus").textContent="Supabase URL과 Publishable key를 코드에 입력해 줘.";return;}
+  $("loginStatus").textContent="로그인 중...";
+  const {error}=await db.auth.signInWithPassword({
+    email:$("email").value.trim(),
+    password:$("password").value
+  });
+  if(error){$("loginStatus").textContent="로그인 실패: "+error.message;return;}
+  $("loginStatus").textContent="";
+  try{await showSession();}catch(e){$("loginStatus").textContent="일정 불러오기 실패: "+e.message;}
+};
+$("logoutBtn").onclick=async()=>{await db.auth.signOut();location.reload();};
+$("prev").onclick=()=>{
+  viewMonth--;
+  if(viewMonth<0){viewMonth=11;viewYear--;}
+  renderCalendar();
+};
+$("next").onclick=()=>{
+  viewMonth++;
+  if(viewMonth>11){viewMonth=0;viewYear++;}
+  renderCalendar();
+};
+$("cancelEdit").onclick=resetForm;
+$("saveEvent").onclick=async()=>{
+  if(!db||!currentUser)return;
+  const title=$("eventName").value.trim();
+  const date=$("eventDate").value;
+  if(!title||!date){setStatus("일정 이름과 날짜를 입력해 줘!");return;}
+  const payload={
+    title,event_date:date,memo:$("eventMemo").value.trim(),
+    is_yearly:$("yearly").checked,updated_at:new Date().toISOString()
+  };
+  setStatus("저장 중...");
+  let result;
+  if(editingId){
+    result=await db.from("farm_events").update(payload).eq("id",editingId);
+  }else{
+    result=await db.from("farm_events").insert(payload);
+  }
+  if(result.error){setStatus("저장 실패: "+result.error.message);return;}
+  selectedDate=date;
+  viewYear=Number(date.slice(0,4));
+  viewMonth=Number(date.slice(5,7))-1;
+  resetForm();
+  setStatus("저장했어! 우리 농장에 새로운 추억이 생겼어 🌷");
+  try{await loadEvents();}catch(e){setStatus("불러오기 실패: "+e.message);}
+};
+
+$("eventDate").value=selectedDate;
+renderCalendar();
+if(!configured){
+  $("loginStatus").textContent="먼저 코드의 Supabase URL과 Publishable key를 입력해 줘.";
+}else{
+  showSession().catch(e=>{$("loginStatus").textContent="연결 오류: "+e.message;});
+  db.auth.onAuthStateChange((_event,session)=>{
+    currentUser=session?.user||null;
+    $("login").classList.toggle("hidden",!!currentUser);
+    $("farm").classList.toggle("hidden",!currentUser);
+    if(currentUser) setTimeout(()=>loadEvents().catch(e=>setStatus(e.message)),0);
+  });
+}
+</script>
 </body>
 </html>
