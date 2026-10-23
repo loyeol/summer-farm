@@ -31,12 +31,12 @@ textarea{min-height:85px}
 .cell .num{font-weight:bold}
 .event-dot{font-size:11px;display:block;margin-top:5px;text-align:left}.diary-dot{font-size:10px;display:block;margin-top:4px;text-align:left;line-height:1.25;color:#456c43;text-decoration:underline;cursor:pointer}.diary-form{border-top:2px dashed #c5d4ae;margin-top:16px;padding-top:12px}.diary-card{background:#fffdf2;border:2px solid #d1dcb6;padding:12px;margin:10px 0}.diary-content{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7}.youtube-link{display:inline-block;margin-top:8px;color:#b44b3d;overflow-wrap:anywhere}
 .small{font-size:12px;color:#687e61}
-.tab-nav{display:flex;gap:8px;width:100%;margin-bottom:14px}.tab-button{flex:1;min-width:0;padding:10px 5px;font-size:clamp(11px,2.5vw,15px)}.tab-button.active{background:#496c48;outline:2px solid #d8e5bf}.checklist-table{width:100%;border-collapse:collapse;table-layout:fixed}.checklist-table th,.checklist-table td{padding:8px 4px;border-bottom:1px solid #d1dcb6;text-align:center;overflow-wrap:anywhere}.checklist-table th{font-size:12px;background:#edf2df}.checklist-table th:nth-child(2),.checklist-table td:nth-child(2){text-align:left}.checklist-table a{color:#456c43}.checklist-table input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:#789b65}.checklist-number{width:38px}.checklist-check{width:76px}
+.tab-nav{display:flex;gap:8px;width:100%;margin-bottom:14px}.tab-button{flex:1;min-width:0;padding:10px 5px;font-size:clamp(11px,2.5vw,15px)}.tab-button.active{background:#496c48;outline:2px solid #d8e5bf}.checklist-table{width:100%;border-collapse:collapse;table-layout:fixed}.checklist-table th,.checklist-table td{padding:8px 4px;border-bottom:1px solid #d1dcb6;text-align:center;overflow-wrap:anywhere}.checklist-table th{font-size:12px;background:#edf2df}.checklist-table th:nth-child(2),.checklist-table td:nth-child(2){text-align:left}.checklist-table a{color:#456c43}.checklist-table input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:#789b65}.checklist-number{width:28px}.checklist-check{width:58px}.checklist-manage{width:66px}
 .hidden{display:none!important}
 #status{white-space:pre-wrap;line-height:1.5}
 @media(max-width:500px){body{padding:7px}.panel{padding:10px}.cell{min-height:66px;padding:3px;font-size:12px}.event-dot{font-size:10px}.dayname{font-size:11px}}
 
-.diary-list-head,.diary-list-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(90px,auto);gap:12px;align-items:center}.diary-list-head{font-size:12px;color:#66745b;padding:6px 12px}.diary-list-row{width:100%;text-align:left;background:transparent;color:inherit;border:0;padding:4px 0;box-shadow:none}.diary-list-row span{text-align:right;font-size:13px}.diary-detail{border-top:1px dashed #d1dcb6;margin-top:10px;padding-top:10px}.checklist-table td .row{gap:4px;flex-wrap:nowrap}.checklist-table td button{padding:6px 8px;font-size:12px}
+.diary-list-head,.diary-list-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(90px,auto);gap:12px;align-items:center}.diary-list-head{font-size:12px;color:#66745b;padding:6px 12px}.diary-list-row{width:100%;text-align:left;background:transparent;color:inherit;border:0;padding:4px 0;box-shadow:none}.diary-list-row span{text-align:right;font-size:13px}.diary-detail{border-top:1px dashed #d1dcb6;margin-top:10px;padding-top:10px}.checklist-table td .row{gap:2px;flex-wrap:nowrap;justify-content:center}.checklist-table td button{padding:3px 4px;font-size:10px;line-height:1.2;min-width:0;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -47,11 +47,11 @@ textarea{min-height:85px}
 
   <section id="login" class="panel">
     <h2>🏡 농장 입장하기</h2>
-    <p class="small">어서 와라, 오늘은 어떤 일이 있었어?</p>
+    <p class="small">가입한 이메일과 비밀번호로 로그인해 주세요.</p>
     <label>이메일</label>
-    <input id="email" type="email" placeholder="이메일 주소 입력">
+    <input id="email" type="email" placeholder="가입한 이메일 주소">
     <label>비밀번호</label>
-    <input id="password" type="password" placeholder="비밀번호 입력">
+    <input id="password" type="password" placeholder="가입할 때 설정한 비밀번호">
     <button id="loginBtn" style="width:100%">🌷 로그인</button>
     <p id="loginStatus" class="small"></p>
   </section>
@@ -64,9 +64,9 @@ textarea{min-height:85px}
 
     <div class="panel">
       <div class="tab-nav" role="tablist" aria-label="농장 메뉴">
-        <button class="tab-button active" data-tab="calendar"> 🌱농장달력 </button>
-        <button class="tab-button" data-tab="diary"> 📔농장일기 </button>
-        <button class="tab-button" data-tab="checklist"> ✅체크리스트 </button>
+        <button class="tab-button active" data-tab="calendar">🌱 농장달력</button>
+        <button class="tab-button" data-tab="diary">📔 농장일기</button>
+        <button class="tab-button" data-tab="checklist">🌱 체크리스트 ☀️</button>
       </div>
     </div>
 
@@ -358,7 +358,7 @@ function renderChecklists(){
   const container=$("checklistList");
   if(!container)return;
   if(!checklistEntries.length){container.innerHTML='<p class="small">아직 체크리스트가 없어. 첫 번째 시트를 추가해 보자! 🌱</p>';return;}
-  container.innerHTML=`<div style="overflow-x:auto"><table class="checklist-table"><thead><tr><th class="checklist-number">번호</th><th>시트 이름</th><th class="checklist-check">미도리 💚</th><th class="checklist-check">치아키 ❤️‍🔥</th><th>관리</th></tr></thead><tbody>${checklistEntries.map((item,i)=>`<tr><td>${i+1}</td><td><a href="${escapeHTML(item.sheet_url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.sheet_name)}</a></td><td><input type="checkbox" aria-label="미도리 체크" data-check-id="${escapeHTML(item.id)}" data-person="midori" ${item.midori_done?"checked":""}></td><td><input type="checkbox" aria-label="치아키 체크" data-check-id="${escapeHTML(item.id)}" data-person="chiaki" ${item.chiaki_done?"checked":""}></td><td><div class="row"><button data-check-edit="${escapeHTML(item.id)}">수정</button><button data-check-delete="${escapeHTML(item.id)}" style="background:#bb8068">삭제</button></div></td></tr>`).join("")}</tbody></table></div>`;
+  container.innerHTML=`<div style="overflow-x:auto"><table class="checklist-table"><thead><tr><th class="checklist-number">번호</th><th>시트 이름</th><th class="checklist-check">미도리 💚</th><th class="checklist-check">치아키 ❤️‍🔥</th><th class="checklist-manage">관리</th></tr></thead><tbody>${checklistEntries.map((item,i)=>`<tr><td>${i+1}</td><td><a href="${escapeHTML(item.sheet_url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.sheet_name)}</a></td><td><input type="checkbox" aria-label="미도리 체크" data-check-id="${escapeHTML(item.id)}" data-person="midori" ${item.midori_done?"checked":""}></td><td><input type="checkbox" aria-label="치아키 체크" data-check-id="${escapeHTML(item.id)}" data-person="chiaki" ${item.chiaki_done?"checked":""}></td><td><div class="row"><button data-check-edit="${escapeHTML(item.id)}">수정</button><button data-check-delete="${escapeHTML(item.id)}" style="background:#bb8068">삭제</button></div></td></tr>`).join("")}</tbody></table></div>`;
   container.querySelectorAll("input[data-check-id]").forEach(box=>box.addEventListener("change",async()=>{
     const field=box.dataset.person==="midori"?"midori_done":"chiaki_done",oldValue=!box.checked;
     box.disabled=true;
