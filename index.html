@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>여름농장 🌱</title>
+<title>여름농장🌱</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/neodgm/neodgm-webfont@1.601/neodgm/style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -41,32 +41,32 @@ textarea{min-height:85px}
 </head>
 <body>
 <main>
-  <div class="grass">☀️ 🌳 🏡 🌳 ☀️</div>
+  <div class="grass">🏡</div>
   <h1>🌱 여름농장 🌱</h1>
   <p style="text-align:center">우리 둘만의 작은 농장</p>
 
   <section id="login" class="panel">
     <h2>🏡 농장 입장하기</h2>
-    <p class="small">가입한 이메일과 비밀번호로 로그인해 주세요.</p>
+    <p class="small">어서 와라, 오늘은 어떤 일이 있었어?</p>
     <label>이메일</label>
-    <input id="email" type="email" placeholder="가입한 이메일 주소">
+    <input id="email" type="email" placeholder="이메일 입력">
     <label>비밀번호</label>
-    <input id="password" type="password" placeholder="가입할 때 설정한 비밀번호">
-    <button id="loginBtn" style="width:100%">🌷 로그인</button>
+    <input id="password" type="password" placeholder="비밀번호 입력">
+    <button id="loginBtn" style="width:100%">🌷로그인</button>
     <p id="loginStatus" class="small"></p>
   </section>
 
   <section id="farm" class="hidden">
     <div class="panel row">
-      <div>🌾 로그인: <strong id="who"></strong></div>
+      <div>🌾로그인: <strong id="who"></strong></div>
       <button id="logoutBtn">로그아웃</button>
     </div>
 
     <div class="panel">
       <div class="tab-nav" role="tablist" aria-label="농장 메뉴">
-        <button class="tab-button active" data-tab="calendar">🌱 농장달력</button>
-        <button class="tab-button" data-tab="diary">📔 농장일기</button>
-        <button class="tab-button" data-tab="checklist">🌱 체크리스트 ☀️</button>
+        <button class="tab-button active" data-tab="calendar"> 🌱농장달력 </button>
+        <button class="tab-button" data-tab="diary"> 📔농장일기 </button>
+        <button class="tab-button" data-tab="checklist"> ✅체크리스트 </button>
       </div>
     </div>
 
@@ -77,20 +77,20 @@ textarea{min-height:85px}
         <button id="next">▶</button>
       </div>
       <div id="calendar"></div>
-      <p class="small">🌼 날짜를 누르면 일정과 일기를 볼 수 있어. 일기가 있는 날에는 💚미도리 / ❤️‍🔥치아키가 표시돼!</p>
+      <p class="small">🌼 날짜를 누르면 일정과 일기를 볼 수 있어. 일기가 있는 날에는 💚미도리/❤️‍🔥치아키가 표시돼!</p>
     </div>
 
     <div class="panel" data-section="calendar">
-      <h2>💌 다가오는 기념일</h2>
+      <h2>💌다가오는 기념일</h2>
       <div id="countdowns">일정을 불러오는 중...</div>
     </div>
 
     <div class="panel hidden" id="diaryPanel" data-section="diary">
-      <h2 id="diaryDateTitle">📔 2026-10-24 일기장</h2>
+      <h2 id="diaryDateTitle">📔2026-10-24 일기장</h2>
       <p class="small">날짜별로 일기를 남겨 봐. 유튜브 링크도 일기에 함께 넣을 수 있어!</p>
       <div id="diaryList"><p class="small">일기를 불러오는 중...</p></div>
       <div class="diary-form">
-        <h3 id="diaryFormTitle">🌱 새 일기 쓰기</h3>
+        <h3 id="diaryFormTitle">🌱새 일기 쓰기</h3>
         <label>날짜</label>
         <input id="diaryDate" type="date">
         <label>제목</label>
@@ -99,17 +99,17 @@ textarea{min-height:85px}
         <textarea id="diaryContent" maxlength="12000" style="min-height:150px" placeholder="오늘 있었던 일, 하고 싶은 말, 작은 추억까지..."></textarea>
         <label>유튜브 링크 (선택)</label>
         <input id="diaryYoutube" type="url" placeholder="https://www.youtube.com/watch?v=...">
-        <button id="saveDiary" style="width:100%">📔 일기 저장하기</button>
+        <button id="saveDiary" style="width:100%">📔일기 저장하기</button>
         <button id="cancelDiaryEdit" class="hidden" style="width:100%;margin-top:8px;background:#8c9382">수정 취소</button>
         <p id="diaryStatus" class="small"></p>
       </div>
     </div>
 
     <div class="panel" data-section="calendar">
-      <h2 id="selectedTitle">📮 날짜별 일정</h2>
+      <h2 id="selectedTitle">📮날짜별 일정</h2>
       <div id="eventList"></div>
       <hr>
-      <h2>🌱 새 일정 심기</h2>
+      <h2>🌱새 일정 심기</h2>
       <label>일정 이름</label>
       <input id="eventName" maxlength="100" placeholder="예: 우리 처음 만난 날">
       <label>날짜</label>
@@ -117,22 +117,22 @@ textarea{min-height:85px}
       <label>날짜별 메모</label>
       <textarea id="eventMemo" maxlength="3000" placeholder="이날의 추억이나 약속을 적어 줘"></textarea>
       <label><input id="yearly" type="checkbox" style="width:auto"> 매년 반복되는 기념일</label>
-      <button id="saveEvent" style="width:100%">🌷 일정 저장하기</button>
+      <button id="saveEvent" style="width:100%">🌷일정 저장하기</button>
       <button id="cancelEdit" class="hidden" style="width:100%;margin-top:8px;background:#8c9382">수정 취소</button>
       <p id="status" class="small"></p>
     </div>
 
     <div class="panel hidden" id="checklistPanel" data-section="checklist">
-      <h2>🌱 체크리스트 ☀️</h2>
+      <h2>✅체크리스트</h2>
       <p class="small">상상만으로도 즐거워, 함께하자!</p>
       <div id="checklistList"><p class="small">체크리스트를 불러오는 중...</p></div>
       <hr>
-      <h3>🌷 체크리스트 추가하기</h3>
+      <h3>🌷체크리스트 추가하기</h3>
       <label>시트 이름</label>
       <input id="checklistName" maxlength="120" placeholder="예: 좀비 아포칼립스 체크리스트">
       <label>구글 시트 링크</label>
       <input id="checklistUrl" type="url" placeholder="https://docs.google.com/spreadsheets/...">
-      <button id="saveChecklist" style="width:100%">➕ 체크리스트 추가</button>
+      <button id="saveChecklist" style="width:100%">➕체크리스트 추가</button>
       <p id="checklistStatus" class="small"></p>
     </div>
   </section>
@@ -331,8 +331,8 @@ function resetDiaryForm(){
   $("diaryContent").value="";
   $("diaryYoutube").value="";
   $("diaryDate").value=selectedDate;
-  $("diaryFormTitle").textContent="🌱 새 일기 쓰기";
-  $("saveDiary").textContent="📔 일기 저장하기";
+  $("diaryFormTitle").textContent="🌱새 일기 쓰기";
+  $("saveDiary").textContent="📔일기 저장하기";
   $("cancelDiaryEdit").classList.add("hidden");
 }
 function startDiaryEdit(d){
@@ -341,8 +341,8 @@ function startDiaryEdit(d){
   $("diaryTitle").value=d.title;
   $("diaryContent").value=d.content||"";
   $("diaryYoutube").value=d.youtube_url||"";
-  $("diaryFormTitle").textContent="✏️ 일기 수정하기";
-  $("saveDiary").textContent="💾 수정 저장하기";
+  $("diaryFormTitle").textContent="✏️일기 수정하기";
+  $("saveDiary").textContent="💾수정 저장하기";
   $("cancelDiaryEdit").classList.remove("hidden");
   $("diaryFormTitle").scrollIntoView({behavior:"smooth"});
 }
@@ -393,7 +393,7 @@ function startEdit(e) {
   $("eventDate").value=e.event_date;
   $("eventMemo").value=e.memo||"";
   $("yearly").checked=e.is_yearly;
-  $("saveEvent").textContent="💾 수정 저장하기";
+  $("saveEvent").textContent="💾수정 저장하기";
   $("cancelEdit").classList.remove("hidden");
   $("selectedTitle").scrollIntoView({behavior:"smooth"});
 }
@@ -403,7 +403,7 @@ function resetForm() {
   $("eventMemo").value="";
   $("yearly").checked=false;
   $("eventDate").value=selectedDate;
-  $("saveEvent").textContent="🌷 일정 저장하기";
+  $("saveEvent").textContent="🌷일정 저장하기";
   $("cancelEdit").classList.add("hidden");
 }
 async function deleteEvent(e) {
@@ -492,7 +492,7 @@ $("saveEvent").onclick=async()=>{
   viewYear=Number(date.slice(0,4));
   viewMonth=Number(date.slice(5,7))-1;
   resetForm();
-  setStatus("저장했어! 우리 농장에 새로운 추억이 생겼어 🌷");
+  setStatus("저장했어! 우리 농장에 새로운 추억이 생겼어🌷");
   try{await loadEvents();}catch(e){setStatus("불러오기 실패: "+e.message);}
 };
 
@@ -514,7 +514,7 @@ $("saveDiary").onclick=async()=>{
   if(result.error){$("diaryStatus").textContent="저장 실패: "+result.error.message;return;}
   selectedDate=date;viewYear=Number(date.slice(0,4));viewMonth=Number(date.slice(5,7))-1;
   resetDiaryForm();
-  $("diaryStatus").textContent="일기를 저장했어! 캘린더에도 표시할게 💚❤️‍🔥";
+  $("diaryStatus").textContent="일기를 저장했어! 캘린더에도 표시할게💚❤️‍🔥";
   try{await loadEvents();}catch(e){$("diaryStatus").textContent=e.message;}
 };
 $("cancelDiaryEdit").onclick=resetDiaryForm;
