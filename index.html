@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>여름농장</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans KR", sans-serif;
+      background: #f7f6e9;
+      color: #435b43;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+    .farm {
+      width: 100%;
+      max-width: 560px;
+      background: #fffdf5;
+      border: 2px solid #dce5cb;
+      border-radius: 28px;
+      padding: 42px 24px;
+      text-align: center;
+      box-shadow: 0 10px 30px #647b4412;
+    }
+    .sun { font-size: 42px; }
+    h1 { font-size: 36px; margin: 14px 0 8px; }
+    .subtitle { color: #829078; font-size: 14px; }
+    .message {
+      margin: 28px 0;
+      padding: 20px;
+      background: #f0f4e6;
+      border-radius: 18px;
+      line-height: 1.8;
+      font-size: 15px;
+    }
+    .buttons {
+      display: grid;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .farm-button {
+      display: block;
+      padding: 15px;
+      border-radius: 14px;
+      background: #7d9b70;
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .farm-button.secondary {
+      background: #e8eddd;
+      color: #52694a;
+    }
+    footer { margin-top: 28px; font-size: 12px; color: #9ba58e; }
+  </style>
+</head>
+<body>
+  <main class="farm">
+    <div class="sun">🌱 ☀️ 🌱</div>
+    <h1>여름농장</h1>
+    <p class="subtitle">우리 둘만의 작은 농장</p>
+    <div class="message">
+      오늘 하루는 어땠어?
+    </div>
+    <div class="buttons">
+      <a class="farm-button" href="#" onclick="alert('일기 기능은 다음 단계에서 만들 거야!'); return false;">📖 우리들의 일기</a>
+      <a class="farm-button secondary" href="#" onclick="alert('영상 공유 기능은 다음 단계에서 만들 거야!'); return false;">🎬 함께 보는 영상</a>
+    </div>
+    <footer>Made with ♡ by Chiaki &amp; Midori</footer>
+  </main>
+</body>
+</html>
