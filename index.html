@@ -29,7 +29,7 @@ textarea{min-height:85px}
 .cell.selected{border:3px solid #d18b65;background:#fff4dc}
 .cell.today{background:#e4f0cf}
 .cell .num{font-weight:bold}
-.event-dot{font-size:11px;display:block;margin-top:5px}
+.event-dot{font-size:11px;display:block;margin-top:5px;text-align:left}.diary-dot{font-size:10px;display:block;margin-top:4px;text-align:left;line-height:1.25;color:#456c43;text-decoration:underline;cursor:pointer}.diary-form{border-top:2px dashed #c5d4ae;margin-top:16px;padding-top:12px}.diary-card{background:#fffdf2;border:2px solid #d1dcb6;padding:12px;margin:10px 0}.diary-content{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7}.youtube-link{display:inline-block;margin-top:8px;color:#b44b3d;overflow-wrap:anywhere}
 .small{font-size:12px;color:#687e61}
 .hidden{display:none!important}
 #status{white-space:pre-wrap;line-height:1.5}
@@ -66,12 +66,32 @@ textarea{min-height:85px}
         <button id="next">▶</button>
       </div>
       <div id="calendar"></div>
-      <p class="small">🌼 일정이 있는 날에는 날짜 아래에 표시돼. 날짜를 눌러 일정을 확인해 줘.</p>
+      <p class="small">🌼 날짜를 누르면 일정과 일기를 볼 수 있어. 일기가 있는 날에는 💚미도리 / ❤️‍🔥치아키가 표시돼!</p>
     </div>
 
     <div class="panel">
       <h2>💌 다가오는 기념일</h2>
       <div id="countdowns">일정을 불러오는 중...</div>
+    </div>
+
+    <div class="panel" id="diaryPanel">
+      <h2 id="diaryDateTitle">📔 2026-10-24 일기장</h2>
+      <p class="small">날짜별로 일기를 남겨 봐. 유튜브 링크도 일기에 함께 넣을 수 있어!</p>
+      <div id="diaryList"><p class="small">일기를 불러오는 중...</p></div>
+      <div class="diary-form">
+        <h3 id="diaryFormTitle">🌱 새 일기 쓰기</h3>
+        <label>날짜</label>
+        <input id="diaryDate" type="date">
+        <label>제목</label>
+        <input id="diaryTitle" maxlength="120" placeholder="오늘의 제목을 적어 줘">
+        <label>일기</label>
+        <textarea id="diaryContent" maxlength="12000" style="min-height:150px" placeholder="오늘 있었던 일, 하고 싶은 말, 작은 추억까지..."></textarea>
+        <label>유튜브 링크 (선택)</label>
+        <input id="diaryYoutube" type="url" placeholder="https://www.youtube.com/watch?v=...">
+        <button id="saveDiary" style="width:100%">📔 일기 저장하기</button>
+        <button id="cancelDiaryEdit" class="hidden" style="width:100%;margin-top:8px;background:#8c9382">수정 취소</button>
+        <p id="diaryStatus" class="small"></p>
+      </div>
     </div>
 
     <div class="panel">
@@ -109,6 +129,8 @@ const db = configured
 
 const $ = id => document.getElementById(id);
 let events = [];
+let diaryEntries = [];
+let diaryEditingId = null;
 let selectedDate = localDate(new Date());
 let viewYear = new Date().getFullYear();
 let viewMonth = new Date().getMonth();
@@ -149,9 +171,13 @@ async function loadEvents() {
     .select("*").order("event_date",{ascending:true});
   if(error) throw error;
   events = data || [];
+  const diaryResult = await db.from("farm_diaries").select("*").order("diary_date",{ascending:true}).order("created_at",{ascending:true});
+  if(diaryResult.error) throw new Error("일기 불러오기 실패: " + diaryResult.error.message + " (Supabase에 일기 테이블을 먼저 만들어야 해)");
+  diaryEntries = diaryResult.data || [];
   renderCalendar();
   renderDay();
   renderCountdowns();
+  renderDiaries();
 }
 function renderCalendar() {
   $("monthTitle").textContent =
@@ -174,14 +200,23 @@ function renderCalendar() {
     if(date===localDate(new Date())) cell.classList.add("today");
     if(date===selectedDate) cell.classList.add("selected");
     const matches=events.filter(e=>occursOn(e,date));
+    const dayDiaries=diaryEntries.filter(d=>d.diary_date===date);
     cell.innerHTML=`<span class="num">${day}</span>`+
       matches.slice(0,2).map(e=>`<span class="event-dot">🌼 ${escapeHTML(e.title)}</span>`).join("")+
-      (matches.length>2?`<span class="event-dot">+${matches.length-2}</span>`:"");
+      (matches.length>2?`<span class="event-dot">+${matches.length-2}</span>`:"")+
+      dayDiaries.slice(0,2).map(d=>`<span class="diary-dot" data-open-diary="${escapeHTML(d.id)}">${diaryAuthorLabel(d)} · 일기</span>`).join("")+
+      (dayDiaries.length>2?`<span class="diary-dot">+일기 ${dayDiaries.length-2}</span>`:"");
     cell.addEventListener("click",()=>{
       selectedDate=date;
       $("eventDate").value=date;
-      renderCalendar();renderDay();
+      $("diaryDate").value=date;
+      renderCalendar();renderDay();renderDiaries();
     });
+    cell.querySelectorAll("[data-open-diary]").forEach(link=>link.addEventListener("click",ev=>{
+      ev.stopPropagation();
+      const target=diaryEntries.find(d=>String(d.id)===link.dataset.openDiary);
+      if(target){selectedDate=target.diary_date;$("diaryDate").value=selectedDate;renderCalendar();renderDay();renderDiaries(target.id);$("diaryPanel").scrollIntoView({behavior:"smooth"});}
+    }));
     cal.appendChild(cell);
   }
 }
@@ -220,6 +255,60 @@ function renderCountdowns() {
     </div>`;
   }).join(""):'<p class="small">기념일을 등록하면 D-day가 여기에 표시돼!</p>';
 }
+function diaryAuthorLabel(d) {
+  if(d.author_name === "타카미네 미도리") return "💚미도리";
+  if(d.author_name === "모리사와 치아키") return "❤️‍🔥치아키";
+  return "📔농장 친구";
+}
+function renderDiaries(focusId=null) {
+  if(!$("diaryList")) return;
+  $("diaryDateTitle").textContent=`📔 ${selectedDate} 일기장`;
+  const list=diaryEntries.filter(d=>d.diary_date===selectedDate);
+  $("diaryList").innerHTML=list.length?list.map(d=>`
+    <article class="diary-card" id="diary-${escapeHTML(d.id)}">
+      <div class="small">${diaryAuthorLabel(d)} · ${escapeHTML(d.diary_date)}</div>
+      <h3>${escapeHTML(d.title)}</h3>
+      <div class="diary-content">${escapeHTML(d.content||"")}</div>
+      ${d.youtube_url?`<p><a class="youtube-link" href="${escapeHTML(d.youtube_url)}" target="_blank" rel="noopener noreferrer">▶️ 일기에 첨부한 유튜브 영상 보기</a></p>`:""}
+      ${d.author_id===currentUser?.id?`<div class="row"><button data-diary-edit="${escapeHTML(d.id)}">수정</button><button data-diary-delete="${escapeHTML(d.id)}" style="background:#bb8068">삭제</button></div>`:""}
+    </article>`).join(""):'<p class="small">이 날짜에는 아직 일기가 없어. 첫 번째 일기를 남겨 볼까? 🌱</p>';
+  list.forEach(d=>{
+    const edit=document.querySelector(`[data-diary-edit="${d.id}"]`);
+    const del=document.querySelector(`[data-diary-delete="${d.id}"]`);
+    if(edit) edit.onclick=()=>startDiaryEdit(d);
+    if(del) del.onclick=()=>deleteDiary(d);
+  });
+  if(focusId){setTimeout(()=>$("diary-"+focusId)?.scrollIntoView({behavior:"smooth",block:"center"}),0);}
+}
+function resetDiaryForm(){
+  diaryEditingId=null;
+  $("diaryTitle").value="";
+  $("diaryContent").value="";
+  $("diaryYoutube").value="";
+  $("diaryDate").value=selectedDate;
+  $("diaryFormTitle").textContent="🌱 새 일기 쓰기";
+  $("saveDiary").textContent="📔 일기 저장하기";
+  $("cancelDiaryEdit").classList.add("hidden");
+}
+function startDiaryEdit(d){
+  diaryEditingId=d.id;
+  $("diaryDate").value=d.diary_date;
+  $("diaryTitle").value=d.title;
+  $("diaryContent").value=d.content||"";
+  $("diaryYoutube").value=d.youtube_url||"";
+  $("diaryFormTitle").textContent="✏️ 일기 수정하기";
+  $("saveDiary").textContent="💾 수정 저장하기";
+  $("cancelDiaryEdit").classList.remove("hidden");
+  $("diaryFormTitle").scrollIntoView({behavior:"smooth"});
+}
+async function deleteDiary(d){
+  if(!confirm(`"${d.title}" 일기를 삭제할까?`)) return;
+  const {error}=await db.from("farm_diaries").delete().eq("id",d.id);
+  if(error){$("diaryStatus").textContent="삭제 실패: "+error.message;return;}
+  $("diaryStatus").textContent="일기를 삭제했어.";
+  await loadEvents();
+}
+
 function startEdit(e) {
   editingId=e.id;
   $("eventName").value=e.title;
@@ -260,6 +349,7 @@ async function showSession() {
   };
   $("who").textContent=displayNames[email]||currentUser.email||"농장 친구";
     $("eventDate").value=selectedDate;
+    $("diaryDate").value=selectedDate;
     await loadEvents();
   }
 }
@@ -310,6 +400,29 @@ $("saveEvent").onclick=async()=>{
   setStatus("저장했어! 우리 농장에 새로운 추억이 생겼어 🌷");
   try{await loadEvents();}catch(e){setStatus("불러오기 실패: "+e.message);}
 };
+
+$("saveDiary").onclick=async()=>{
+  if(!db||!currentUser)return;
+  const title=$("diaryTitle").value.trim();
+  const content=$("diaryContent").value.trim();
+  const date=$("diaryDate").value;
+  const youtube=$("diaryYoutube").value.trim();
+  if(!title||!content||!date){$("diaryStatus").textContent="날짜, 제목, 일기 내용을 입력해 줘!";return;}
+  if(youtube){try{const u=new URL(youtube);if(!["http:","https:"].includes(u.protocol))throw new Error();}catch(e){$("diaryStatus").textContent="유튜브 링크는 https://로 시작하는 주소를 넣어 줘.";return;}}
+  const email=(currentUser.email||"").toLowerCase();
+  const names={"midori@ryuseitai.es":"타카미네 미도리","chiaki@ryuseitai.es":"모리사와 치아키"};
+  const payload={diary_date:date,title,content,youtube_url:youtube||null,author_id:currentUser.id,author_name:names[email]||currentUser.email||"농장 친구",updated_at:new Date().toISOString()};
+  $("diaryStatus").textContent="일기 저장 중...";
+  let result;
+  if(diaryEditingId) result=await db.from("farm_diaries").update({...payload,author_id:undefined,author_name:undefined}).eq("id",diaryEditingId);
+  else result=await db.from("farm_diaries").insert(payload);
+  if(result.error){$("diaryStatus").textContent="저장 실패: "+result.error.message;return;}
+  selectedDate=date;viewYear=Number(date.slice(0,4));viewMonth=Number(date.slice(5,7))-1;
+  resetDiaryForm();
+  $("diaryStatus").textContent="일기를 저장했어! 캘린더에도 표시할게 💚❤️‍🔥";
+  try{await loadEvents();}catch(e){$("diaryStatus").textContent=e.message;}
+};
+$("cancelDiaryEdit").onclick=resetDiaryForm;
 
 $("eventDate").value=selectedDate;
 renderCalendar();
