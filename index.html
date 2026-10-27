@@ -31,12 +31,12 @@ textarea{min-height:85px}
 .cell .num{font-weight:bold}
 .event-dot{font-size:11px;display:block;margin-top:5px;text-align:left}.diary-dot{font-size:10px;display:block;margin-top:4px;text-align:left;line-height:1.25;color:#456c43;text-decoration:underline;cursor:pointer}.diary-form{border-top:2px dashed #c5d4ae;margin-top:16px;padding-top:12px}.diary-card{background:#fffdf2;border:2px solid #d1dcb6;padding:12px;margin:10px 0}.diary-content{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7}.youtube-link{display:inline-block;margin-top:8px;color:#b44b3d;overflow-wrap:anywhere}
 .small{font-size:12px;color:#687e61}
-.tab-nav{display:flex;gap:8px;width:100%;margin-bottom:14px}.tab-button{flex:1;min-width:0;padding:10px 5px;font-size:clamp(11px,2.5vw,15px)}.tab-button.active{background:#496c48;outline:2px solid #d8e5bf}.checklist-table{width:100%;border-collapse:collapse;table-layout:fixed}.checklist-table th,.checklist-table td{padding:8px 4px;border-bottom:1px solid #d1dcb6;text-align:center;overflow-wrap:anywhere}.checklist-table th{font-size:12px;background:#edf2df}.checklist-table th:nth-child(2),.checklist-table td:nth-child(2){text-align:left}.checklist-table a{color:#456c43}.checklist-table input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:#789b65}.checklist-number{width:46px;white-space:nowrap}.checklist-table th:first-child,.checklist-table td:first-child{white-space:nowrap}.checklist-check{width:58px}.checklist-manage{width:82px}
+.tab-nav{display:flex;gap:8px;width:100%;margin-bottom:14px}.tab-button{flex:1;min-width:0;padding:10px 5px;font-size:clamp(11px,2.5vw,15px)}.tab-button.active{background:#496c48;outline:2px solid #d8e5bf}.checklist-table{width:100%;border-collapse:collapse;table-layout:fixed}.checklist-table th,.checklist-table td{padding:8px 4px;border-bottom:1px solid #d1dcb6;text-align:center;overflow-wrap:anywhere}.checklist-table th{font-size:12px;background:#edf2df}.checklist-table th:nth-child(2),.checklist-table td:nth-child(2){text-align:left}.checklist-table a{color:#456c43}.checklist-table input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:#789b65}.checklist-number{width:52px;white-space:nowrap}.checklist-table th:first-child,.checklist-table td:first-child{white-space:nowrap}.checklist-check{width:60px}.checklist-manage{width:76px}.checklist-table th:nth-child(2),.checklist-table td:nth-child(2){overflow-wrap:anywhere}.checklist-table td:first-child{white-space:nowrap}
 .hidden{display:none!important}
 #status{white-space:pre-wrap;line-height:1.5}
 @media(max-width:500px){body{padding:7px}.panel{padding:10px}.cell{min-height:66px;padding:3px;font-size:12px}.event-dot{font-size:10px}.dayname{font-size:11px}}
 
-.diary-list-head,.diary-list-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(90px,auto);gap:12px;align-items:center}.diary-list-head{font-size:12px;color:#496c48;padding:8px 12px;background:#edf2df;border:1px solid #d1dcb6;border-radius:8px}.diary-list-row{width:100%;text-align:left;background:transparent;color:inherit;border:0;padding:4px 0;box-shadow:none}.diary-list-row span{text-align:right;font-size:13px}.diary-detail{border-top:1px dashed #d1dcb6;margin-top:10px;padding-top:10px}.checklist-table td .row{gap:4px;flex-wrap:nowrap;justify-content:center;align-items:center}.checklist-table td button{display:inline-flex;align-items:center;justify-content:center;padding:5px 7px;font-size:11px;line-height:1.2;min-width:32px;height:30px;text-align:center;white-space:nowrap;flex:0 0 auto}
+.diary-date-nav{display:flex;align-items:center;justify-content:space-between;gap:10px}.diary-date-nav h2{flex:1;margin:0;font-size:clamp(16px,3vw,22px)}.diary-date-nav button{padding:7px 10px;flex:0 0 auto}.schedule-section{margin:12px 0}.schedule-item{background:#edf2df;border:1px solid #d1dcb6;border-radius:8px;padding:10px 12px;margin:8px 0}.schedule-date{font-size:12px;color:#687e61;margin-bottom:5px}.event-type{display:inline-block;font-size:11px;background:#dce9c8;border:1px solid #c1d4a8;border-radius:4px;padding:2px 6px;margin-left:5px}.diary-list-head,.diary-list-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(90px,auto);gap:12px;align-items:center}.diary-list-head{font-size:12px;color:#496c48;padding:8px 12px;background:#edf2df;border:1px solid #d1dcb6;border-radius:8px}.diary-list-row{width:100%;text-align:left;background:transparent;color:inherit;border:0;padding:4px 0;box-shadow:none}.diary-list-row span{text-align:right;font-size:13px}.diary-detail{border-top:1px dashed #d1dcb6;margin-top:10px;padding-top:10px}.checklist-table td .row{gap:4px;flex-wrap:nowrap;justify-content:center;align-items:center}.checklist-table td button{display:inline-flex;align-items:center;justify-content:center;padding:5px 7px;font-size:11px;line-height:1.2;min-width:32px;height:30px;text-align:center;white-space:nowrap;flex:0 0 auto}
 </style>
 </head>
 <body>
@@ -70,6 +70,11 @@ textarea{min-height:85px}
       </div>
     </div>
 
+    <div class="panel" data-section="calendar" id="scheduleOverview">
+      <div id="todaySchedule" class="schedule-section"></div>
+      <div id="weekSchedule" class="schedule-section"></div>
+    </div>
+
     <div class="panel" data-section="calendar">
       <div class="nav">
         <button id="prev">◀</button>
@@ -77,16 +82,11 @@ textarea{min-height:85px}
         <button id="next">▶</button>
       </div>
       <div id="calendar"></div>
-      <p class="small">🌼날짜를 누르면 일정과 일기를 볼 수 있어. 일기가 있는 날에는 💚미도리/❤️‍🔥치아키가 표시돼!</p>
-    </div>
-
-    <div class="panel" data-section="calendar">
-      <h2>💌다가오는 기념일</h2>
-      <div id="countdowns">일정을 불러오는 중...</div>
+      <p class="small">🌼 날짜를 누르면 일정과 일기를 볼 수 있어. 일기가 있는 날에는 💚미도리 / ❤️‍🔥치아키가 표시돼!</p>
     </div>
 
     <div class="panel hidden" id="diaryPanel" data-section="diary">
-      <h2 id="diaryDateTitle">📔2026-10-24 일기장</h2>
+      <div class="diary-date-nav"><button id="diaryPrev" type="button" aria-label="전날">◀</button><h2 id="diaryDateTitle">📔2026-10-24 일기장</h2><button id="diaryNext" type="button" aria-label="다음 날">▶</button></div>
       <p class="small">날짜별로 일기를 남겨 봐. 유튜브 링크도 일기에 함께 넣을 수 있어!</p>
       <div id="diaryList"><p class="small">일기를 불러오는 중...</p></div>
       <div class="diary-form">
@@ -114,9 +114,14 @@ textarea{min-height:85px}
       <input id="eventName" maxlength="100" placeholder="예: 우리 처음 만난 날">
       <label>날짜</label>
       <input id="eventDate" type="date">
+      <label>일정 종류</label>
+      <select id="eventCategory" style="width:100%;padding:10px;border:2px solid #92ad7b;border-radius:5px;margin:5px 0 10px;background:white;color:#304b35;font:inherit">
+        <option value="기념일">기념일</option><option value="생일">생일</option><option value="이벤트">이벤트</option><option value="일정">일정</option><option value="기타">기타</option>
+      </select>
       <label>날짜별 메모</label>
       <textarea id="eventMemo" maxlength="3000" placeholder="이날의 추억이나 약속을 적어 줘"></textarea>
       <label><input id="yearly" type="checkbox" style="width:auto"> 매년 반복되는 기념일</label>
+      <label><input id="showInWeek" type="checkbox" style="width:auto" checked> 오늘 / 이번 주 일정에 표시</label>
       <button id="saveEvent" style="width:100%">🌷일정 저장하기</button>
       <button id="cancelEdit" class="hidden" style="width:100%;margin-top:8px;background:#8c9382">수정 취소</button>
       <p id="status" class="small"></p>
@@ -233,7 +238,7 @@ function renderCalendar() {
     const matches=events.filter(e=>occursOn(e,date));
     const dayDiaries=diaryEntries.filter(d=>d.diary_date===date);
     cell.innerHTML=`<span class="num">${day}</span>`+
-      matches.slice(0,2).map(e=>`<span class="event-dot">🌼 ${escapeHTML(e.title)}</span>`).join("")+
+      matches.slice(0,2).map(e=>`<span class="event-dot">${escapeHTML(e.category||"기념일")} · ${escapeHTML(e.title)}</span>`).join("")+
       (matches.length>2?`<span class="event-dot">+${matches.length-2}</span>`:"")+
       dayDiaries.slice(0,2).map(d=>`<span class="diary-dot" data-open-diary="${escapeHTML(d.id)}">${diaryAuthorLabel(d)} · 일기</span>`).join("")+
       (dayDiaries.length>2?`<span class="diary-dot">+일기 ${dayDiaries.length-2}</span>`:"");
@@ -241,7 +246,7 @@ function renderCalendar() {
       selectedDate=date;
       $("eventDate").value=date;
       $("diaryDate").value=date;
-      renderCalendar();renderDay();renderDiaries();
+      renderCalendar();renderDay();renderDiaries();renderCountdowns();
     });
     cell.querySelectorAll("[data-open-diary]").forEach(link=>link.addEventListener("click",ev=>{
       ev.stopPropagation();
@@ -257,6 +262,7 @@ function renderDay() {
   $("eventList").innerHTML=list.length?list.map(e=>`
     <div class="panel">
       <strong>🌷 ${escapeHTML(e.title)}</strong>
+      <span class="event-type">${escapeHTML(e.category||"기념일")}</span>
       ${e.is_yearly?'<span class="small"> · 매년 반복</span>':""}
       <p>${escapeHTML(e.memo||"메모 없음").replace(/\n/g,"<br>")}</p>
       <p class="small">등록자: ${e.created_by===currentUser?.id?"나":"친구 또는 나"}</p>
@@ -276,16 +282,25 @@ function listButton(e) {
   if(del) del.onclick=()=>deleteEvent(e);
 }
 function renderCountdowns() {
-  const upcoming=events.map(e=>({e,date:nextOccurrence(e)}))
-    .sort((a,b)=>a.date-b.date).slice(0,8);
-  $("countdowns").innerHTML=upcoming.length?upcoming.map(({e,date})=>{
-    const n=dayDiff(date);
-    return `<div class="panel">
-      💚 <strong>${escapeHTML(e.title)}</strong>
-      <div class="small">${localDate(date)} · ${n===0?"오늘!":`D-${n}`}</div>
-    </div>`;
-  }).join(""):'<p class="small">기념일을 등록하면 D-day가 여기에 표시돼!</p>';
+  const today = localDate(new Date());
+  const todayItems = events.filter(e => (e.show_in_week !== false) && occursOn(e, today));
+  const base = new Date(); base.setHours(0,0,0,0);
+  const end = new Date(base); end.setDate(end.getDate()+6);
+  const weekItems = [];
+  for (let offset=0; offset<=6; offset++) {
+    const dateObj = new Date(base); dateObj.setDate(base.getDate()+offset);
+    const date = localDate(dateObj);
+    const dayItems = events.filter(e => (e.show_in_week !== false) && occursOn(e,date));
+    if(dayItems.length) weekItems.push({date, items:dayItems});
+  }
+  const itemHTML = (e) => `<div class="schedule-item"><strong>🌷 ${escapeHTML(e.title)}</strong><span class="event-type">${escapeHTML(e.category||"기념일")}</span>${e.is_yearly?'<span class="small"> · 매년 반복</span>':""}${e.memo?`<div class="small" style="margin-top:5px">${escapeHTML(e.memo).replace(/\n/g,"<br>")}</div>`:""}</div>`;
+  const todayBox = $("todaySchedule");
+  todayBox.innerHTML = todayItems.length ? `<h2>☀️오늘의 일정</h2>${todayItems.map(itemHTML).join("")}` : "";
+  const weekBox = $("weekSchedule");
+  weekBox.innerHTML = weekItems.length ? `<h2>🌷이번 주 일정</h2>${weekItems.map(group=>`<div class="schedule-item"><div class="schedule-date">${group.date} (${["일","월","화","수","목","금","토"][new Date(group.date+"T00:00:00").getDay()]})</div>${group.items.map(itemHTML).join("")}</div>`).join("")}` : "";
+  $("scheduleOverview").classList.toggle("hidden", !todayItems.length && !weekItems.length);
 }
+
 function diaryAuthorLabel(d) {
   if(d.author_name === "타카미네 미도리") return "💚미도리";
   if(d.author_name === "모리사와 치아키") return "❤️‍🔥치아키";
@@ -307,7 +322,7 @@ function renderDiaries(focusId=null) {
         </button>
         ${open?`<div class="diary-detail"><div class="small">${escapeHTML(d.diary_date)}</div>
           <div class="diary-content">${escapeHTML(d.content||"")}</div>
-          ${d.youtube_url?`<p><a class="youtube-link" href="${escapeHTML(d.youtube_url)}" target="_blank" rel="noopener noreferrer">▶️ 일기에 첨부한 유튜브 영상 보기</a></p>`:""}
+          ${d.youtube_url?`<p><a class="youtube-link" href="${escapeHTML(d.youtube_url)}" target="_blank" rel="noopener noreferrer">▶️일기에 첨부한 유튜브 영상 보기</a></p>`:""}
           ${d.author_id===currentUser?.id?`<div class="row"><button data-diary-edit="${escapeHTML(d.id)}">수정</button><button data-diary-delete="${escapeHTML(d.id)}" style="background:#bb8068">삭제</button></div>`:""}
         </div>`:""}
       </article>`;
@@ -358,7 +373,7 @@ function renderChecklists(){
   const container=$("checklistList");
   if(!container)return;
   if(!checklistEntries.length){container.innerHTML='<p class="small">아직 체크리스트가 없어. 첫 번째 시트를 추가해 보자! 🌱</p>';return;}
-  container.innerHTML=`<div style="overflow-x:auto"><table class="checklist-table"><thead><tr><th class="checklist-number">번호</th><th>시트 이름</th><th class="checklist-check">미도리</th><th class="checklist-check">치아키</th><th class="checklist-manage">관리</th></tr></thead><tbody>${checklistEntries.map((item,i)=>`<tr><td>${i+1}</td><td><a href="${escapeHTML(item.sheet_url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.sheet_name)}</a></td><td><input type="checkbox" aria-label="미도리 체크" data-check-id="${escapeHTML(item.id)}" data-person="midori" ${item.midori_done?"checked":""}></td><td><input type="checkbox" aria-label="치아키 체크" data-check-id="${escapeHTML(item.id)}" data-person="chiaki" ${item.chiaki_done?"checked":""}></td><td><div class="row"><button data-check-edit="${escapeHTML(item.id)}">수정</button><button data-check-delete="${escapeHTML(item.id)}" style="background:#bb8068">삭제</button></div></td></tr>`).join("")}</tbody></table></div>`;
+  container.innerHTML=`<div><table class="checklist-table"><thead><tr><th class="checklist-number">번호</th><th>시트 이름</th><th class="checklist-check">미도리</th><th class="checklist-check">치아키</th><th class="checklist-manage">관리</th></tr></thead><tbody>${checklistEntries.map((item,i)=>`<tr><td>${i+1}</td><td><a href="${escapeHTML(item.sheet_url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.sheet_name)}</a></td><td><input type="checkbox" aria-label="미도리 체크" data-check-id="${escapeHTML(item.id)}" data-person="midori" ${item.midori_done?"checked":""}></td><td><input type="checkbox" aria-label="치아키 체크" data-check-id="${escapeHTML(item.id)}" data-person="chiaki" ${item.chiaki_done?"checked":""}></td><td><div class="row"><button data-check-edit="${escapeHTML(item.id)}">수정</button><button data-check-delete="${escapeHTML(item.id)}" style="background:#bb8068">삭제</button></div></td></tr>`).join("")}</tbody></table></div>`;
   container.querySelectorAll("input[data-check-id]").forEach(box=>box.addEventListener("change",async()=>{
     const field=box.dataset.person==="midori"?"midori_done":"chiaki_done",oldValue=!box.checked;
     box.disabled=true;
@@ -393,6 +408,8 @@ function startEdit(e) {
   $("eventDate").value=e.event_date;
   $("eventMemo").value=e.memo||"";
   $("yearly").checked=e.is_yearly;
+  $("eventCategory").value=e.category||"기념일";
+  $("showInWeek").checked=e.show_in_week!==false;
   $("saveEvent").textContent="💾수정 저장하기";
   $("cancelEdit").classList.remove("hidden");
   $("selectedTitle").scrollIntoView({behavior:"smooth"});
@@ -402,6 +419,8 @@ function resetForm() {
   $("eventName").value="";
   $("eventMemo").value="";
   $("yearly").checked=false;
+  $("eventCategory").value="기념일";
+  $("showInWeek").checked=true;
   $("eventDate").value=selectedDate;
   $("saveEvent").textContent="🌷일정 저장하기";
   $("cancelEdit").classList.add("hidden");
@@ -470,6 +489,17 @@ $("next").onclick=()=>{
   if(viewMonth>11){viewMonth=0;viewYear++;}
   renderCalendar();
 };
+function shiftDiaryDate(amount){
+  const date = new Date(selectedDate+"T00:00:00");
+  date.setDate(date.getDate()+amount);
+  selectedDate=localDate(date);
+  $("diaryDate").value=selectedDate;
+  $("eventDate").value=selectedDate;
+  expandedDiaryId=null;
+  renderCalendar();renderDay();renderDiaries();
+}
+$("diaryPrev").onclick=()=>shiftDiaryDate(-1);
+$("diaryNext").onclick=()=>shiftDiaryDate(1);
 $("cancelEdit").onclick=resetForm;
 $("saveEvent").onclick=async()=>{
   if(!db||!currentUser)return;
@@ -478,7 +508,10 @@ $("saveEvent").onclick=async()=>{
   if(!title||!date){setStatus("일정 이름과 날짜를 입력해 줘!");return;}
   const payload={
     title,event_date:date,memo:$("eventMemo").value.trim(),
-    is_yearly:$("yearly").checked,updated_at:new Date().toISOString()
+    is_yearly:$("yearly").checked,
+    category:$("eventCategory").value,
+    show_in_week:$("showInWeek").checked,
+    updated_at:new Date().toISOString()
   };
   setStatus("저장 중...");
   let result;
